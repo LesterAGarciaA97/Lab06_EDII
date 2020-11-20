@@ -66,6 +66,7 @@ namespace BibliotecaDeClases.RSA
                 {
                     Writer.Write(n.ToString() + "," + d.ToString());
                 }
+                Ws.Close();
             }
 
             using (var Ws2 = new FileStream(RutaOrigen + "/" + "public.Key", FileMode.OpenOrCreate))//Escribiendo llave privada
@@ -74,6 +75,7 @@ namespace BibliotecaDeClases.RSA
                 {
                     Writer2.Write(n.ToString() + "," + e.ToString());
                 }
+                Ws2.Close();
             }
         }
 
