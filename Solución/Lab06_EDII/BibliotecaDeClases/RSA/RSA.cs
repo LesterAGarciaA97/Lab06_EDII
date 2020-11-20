@@ -79,7 +79,7 @@ namespace BibliotecaDeClases.RSA
             }
         }
 
-        public void CifradoRSa(string RutaArchivo, string RutaLlave, string NuevoNombre){
+        public void RSACifrado(string RutaArchivo, string RutaLlave, string NuevoNombre){
             StreamReader Lector = new StreamReader(RutaLlave);
             var e = 0;
             var n = 0;
@@ -90,6 +90,7 @@ namespace BibliotecaDeClases.RSA
                 n = Convert.ToInt32(Valores[0]);
                 e = Convert.ToInt32(Valores[1]);
             }
+            Lector.Close();
             var RutaOrigen = Environment.CurrentDirectory + "\\temp"; 
             int size = Convert.ToInt32(Math.Ceiling(Math.Log(n, 256)));
             var RutaArchCifrado = Path.Combine(RutaOrigen, NuevoNombre + ".rsa");
@@ -135,6 +136,7 @@ namespace BibliotecaDeClases.RSA
                 n = Convert.ToInt32(Valores[0]);
                 d = Convert.ToInt32(Valores[1]);
             }
+            Lector.Close();
             var RutaOrigen = Environment.CurrentDirectory + "\\temp";
             int size = Convert.ToInt32(Math.Ceiling(Math.Log(n, 256)));
             var RutaArchCifrado = Path.Combine(RutaOrigen, NuevoNombre + ".rsa");

@@ -26,39 +26,85 @@ namespace Lab06_EDII.Controllers
         /// <param name="q">Numero primo, se validara si este es un valor primo</param>
         /// <returns>Retornara un archivo "Keys.zip", donde contendra las llaves generadas (public.key, private.key)</returns>
         [HttpGet("rsa/{p}/{q}")] //generar las llaves
-        public async Task<ActionResult> Get(int p, int q) {
+        public async Task<ActionResult> Get(int p, int q)
+        {
             CreateDirectory();
             var ValorP = data.ValidacionPrimo(p, 2);
             var ValorQ = data.ValidacionPrimo(q, 2);
             if (ValorP == true && ValorQ == true)
             {
-                rSA.GenerarLlaves(p,q);
+                rSA.GenerarLlaves(p, q);
             }
-            else if ((ValorP != true && ValorQ != true)||(ValorP != true && ValorQ == true)||(ValorP == true && ValorQ != true))
+            else if ((ValorP != true && ValorQ != true) || (ValorP != true && ValorQ == true) || (ValorP == true && ValorQ != true))
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
             return await DownloadZip();
-           
+
         }
+        /// <summary>
+        /// Metodo para Cifrar o Decifrar, Dependiendo de la llave que se le ingrese
+        /// </summary>
+        /// <param name="nombre">Nuevo nombre del archivo a cifrar</param>
+        /// <param name="file">Archivo a cifrar</param>
+        /// <param name="key">llave generada por el sistema (public.key | private.key)</param>
+        /// <returns>Archivo Cifrado o Decifrado con extension (.rsa)</returns>
+        [HttpPost("rsa/{nombre}")]
+        public async Task<ActionResult> Post(string nombre, IFormFile file, IFormFile key)
+        {
+            CreateDirectory();
+            ArchivoARuta(file);
+            ArchivoARuta(key);
+            var TipoKey = Path.GetFileNameWithoutExtension(key.FileName);
+            var RutaFile = Environment.CurrentDirectory + "\\temp\\" + file.FileName;
+            var RutaKey = Environment.CurrentDirectory + "\\temp\\" + key.FileName;
+            if (TipoKey == "public")
+            {
+                rSA.RSACifrado(RutaFile, RutaKey, nombre);
+            }
+            else if (TipoKey == "private")
+            {
+                rSA.RSADecifrado(RutaFile, RutaKey, nombre);
+            }
+            else
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+            var path = Environment.CurrentDirectory + "\\temp\\" + nombre + ".rsa";
+            var Memory = new MemoryStream();
+            using (var Stream = new FileStream(path, FileMode.Open))
+            {
+                await Stream.CopyToAsync(Memory);
+            }
+            Memory.Position = 0;
+            var extensionFile = Path.GetExtension(path).ToLowerInvariant();
+            DeleteDirectory();
+            return File(Memory, GetMimeTypes()[extensionFile], Path.GetFileName(path));
+
+        }
+
         /// <summary>
         /// Crea el directorio temporal
         /// </summary>
-        private void CreateDirectory() {
+        private void CreateDirectory()
+        {
             Directory.CreateDirectory($"temp");
         }
         /// <summary>
         /// Borra el directorio temporal
         /// </summary>
-        private void DeleteDirectory() {
+        private void DeleteDirectory()
+        {
             Directory.Delete($"temp", true);
         }
-        private void DeleteFile() {
+        private void DeleteFile()
+        {
             System.IO.File.Delete(Environment.CurrentDirectory + "\\Keys.zip");
         }/// <summary>
-        /// Metodo para retornar el archivo zip, introducir dentro del zip los archivos dentro de temp.
-        /// </summary>
-        /// <returns></returns>
+         /// Metodo para retornar el archivo zip, introducir dentro del zip los archivos dentro de temp.
+         /// </summary>
+         /// <returns></returns>
         async Task<FileStreamResult> DownloadZip()
         {
             var RutaZip = Path.Combine(Environment.CurrentDirectory, "Keys.zip");
@@ -89,6 +135,37 @@ namespace Lab06_EDII.Controllers
             DeleteDirectory();
             DeleteFile();
             return File(memory, MediaTypeNames.Application.Octet, Path.GetFileName(path));
+        }
+        public static void ArchivoARuta(IFormFile Archivo)
+        {
+            using (var reader = new BinaryReader(Archivo.OpenReadStream()))
+            {
+                using (var st = new FileStream($"temp\\{Archivo.FileName}", FileMode.OpenOrCreate))
+                {
+                    using (var w = new BinaryWriter(st))
+                    {
+                        var bl = 10000;
+                        var bf = new byte[bl];
+                        bf = reader.ReadBytes(bl);
+                        foreach (var car in bf)
+                        {
+                            w.Write(car);
+                        }
+                    }
+                    reader.Close();
+                }
+            }
+        }
+        /// <summary>
+        /// Metodo donde crea el diccionario con las diferentes extension, y con tipo de contenido de la extension
+        /// </summary>
+        /// <returns></returns>
+        private Dictionary<string, string> GetMimeTypes()
+        {
+            return new Dictionary<string, string> {
+                {".txt","text/plain"},
+                {".rsa","text/plain"},
+            };
         }
     }
 }
