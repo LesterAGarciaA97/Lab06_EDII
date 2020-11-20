@@ -39,7 +39,6 @@ namespace Lab06_EDII.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
             return await DownloadZip();
-
         }
         /// <summary>
         /// Metodo para Cifrar o Decifrar, Dependiendo de la llave que se le ingrese
@@ -80,7 +79,6 @@ namespace Lab06_EDII.Controllers
             var extensionFile = Path.GetExtension(path).ToLowerInvariant();
             DeleteDirectory();
             return File(Memory, GetMimeTypes()[extensionFile], Path.GetFileName(path));
-
         }
 
         /// <summary>

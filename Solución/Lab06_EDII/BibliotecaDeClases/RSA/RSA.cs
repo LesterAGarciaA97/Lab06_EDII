@@ -9,7 +9,6 @@ namespace BibliotecaDeClases.RSA
         const int length = 1000;
         public static int e;
 
-       
         public int MCD(int a, int b)
         {
             int restante;
@@ -23,7 +22,6 @@ namespace BibliotecaDeClases.RSA
             return restante;
         }
 
-        
         public void GenerarLlaves(int ValorP, int ValorQ){
             var p = ValorP;
             var q = ValorQ;
@@ -45,7 +43,6 @@ namespace BibliotecaDeClases.RSA
             }
 
             var Temp = 0;
-            
             int d = 2; // Encontrar el valor de D
             do
             {
@@ -187,6 +184,4 @@ namespace BibliotecaDeClases.RSA
             return ValorOriginal;
         }
     }
-
 }
-
