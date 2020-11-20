@@ -119,9 +119,13 @@ namespace BibliotecaDeClases.RSA
                                     }
                                 }
                             }
+                            Writer.Close();
                         }
+                        Wstream.Close();
                     }
+                    Reader.Close();
                 }
+                Fstream.Close();
             }
         }
         
@@ -167,10 +171,13 @@ namespace BibliotecaDeClases.RSA
                                     }
                                     Contador++;
                                 }
-                            }
+                            }Writer.Close();
                         }
+                        Wstream.Close();
                     }
+                    Reader.Close();
                 }
+                Fstream.Close();
             }
         }
         public int ValorCifrado(int ValorCifrado, int d, int n){

@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Lab06_EDII</name>
+    </assembly>
+    <members>
+        <member name="M:Lab06_EDII.Controllers.apiController.Get(System.Int32,System.Int32)">
+            <summary>
+            Metodo para generar llaves
+            </summary>
+            <param name="p">Numero primo, se validara si este es un valor primo</param>
+            <param name="q">Numero primo, se validara si este es un valor primo</param>
+            <returns>Retornara un archivo "Keys.zip", donde contendra las llaves generadas (public.key, private.key)</returns>
+        </member>
+        <member name="M:Lab06_EDII.Controllers.apiController.Post(System.String,Microsoft.AspNetCore.Http.IFormFile,Microsoft.AspNetCore.Http.IFormFile)">
+            <summary>
+            Metodo para Cifrar o Decifrar, Dependiendo de la llave que se le ingrese
+            </summary>
+            <param name="nombre">Nuevo nombre del archivo a cifrar</param>
+            <param name="file">Archivo a cifrar</param>
+            <param name="key">llave generada por el sistema (public.key | private.key)</param>
+            <returns>Archivo Cifrado o Decifrado con extension (.rsa)</returns>
+        </member>
+        <member name="M:Lab06_EDII.Controllers.apiController.CreateDirectory">
+            <summary>
+            Crea el directorio temporal
+            </summary>
+        </member>
+        <member name="M:Lab06_EDII.Controllers.apiController.DeleteDirectory">
+            <summary>
+            Borra el directorio temporal
+            </summary>
+        </member>
+        <member name="M:Lab06_EDII.Controllers.apiController.DownloadZip">
+            <summary>
+            Metodo para retornar el archivo zip, introducir dentro del zip los archivos dentro de temp.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Lab06_EDII.Controllers.apiController.Download(System.String)">
+            <summary>
+            Metodo para descargar
+            </summary>
+            <param name="path">Ruta del archivo .Zip</param>
+            <returns>Archivo zip</returns>
+        </member>
+        <member name="M:Lab06_EDII.Controllers.apiController.GetMimeTypes">
+            <summary>
+            Metodo donde crea el diccionario con las diferentes extension, y con tipo de contenido de la extension
+            </summary>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
