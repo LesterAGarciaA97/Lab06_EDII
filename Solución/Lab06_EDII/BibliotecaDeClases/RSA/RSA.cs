@@ -1,11 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System;
 using System.IO;
-using System.Linq;
 using System.Numerics;
-using System.Text;
 
 namespace BibliotecaDeClases.RSA
 {
