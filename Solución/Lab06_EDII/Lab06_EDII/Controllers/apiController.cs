@@ -27,6 +27,7 @@ namespace Lab06_EDII.Controllers
         [HttpGet("rsa/{p}/{q}")] //generar las llaves
         public async Task<ActionResult> Get(int p, int q)
         {
+            ExistFiles();
             CreateDirectory();
             var ValorP = data.ValidacionPrimo(p, 2);
             var ValorQ = data.ValidacionPrimo(q, 2);
@@ -48,21 +49,30 @@ namespace Lab06_EDII.Controllers
         /// <param name="key">llave generada por el sistema (public.key | private.key)</param>
         /// <returns>Archivo Cifrado o Decifrado con extension (.rsa)</returns>
         [HttpPost("rsa/{nombre}")]
-        public async Task<ActionResult> Post(string nombre, IFormFile file, IFormFile key)
+        public async Task<ActionResult> Post(string nombre, IFormFile file, IFormFile key) //Si el metodo devuelve letras chinas existe un problema
         {
+            ExistFiles();
             CreateDirectory();
             ArchivoARuta(file);
             ArchivoARuta(key);
             var TipoKey = Path.GetFileNameWithoutExtension(key.FileName);
+            var NombreArchivo = Path.GetFileNameWithoutExtension(file.FileName);
             var RutaFile = Environment.CurrentDirectory + "\\temp\\" + file.FileName;
             var RutaKey = Environment.CurrentDirectory + "\\temp\\" + key.FileName;
-            if (TipoKey == "public")
+            if (NombreArchivo != nombre) //Validacion no permite tener archivo de entrada con mismo nombre que el de salida.
             {
-                rSA.RSACifrado(RutaFile, RutaKey, nombre);
-            }
-            else if (TipoKey == "private")
-            {
-                rSA.RSADecifrado(RutaFile, RutaKey, nombre);
+                if (TipoKey == "public")
+                {
+                    rSA.RSACifrado(RutaFile, RutaKey, nombre);
+                }
+                else if (TipoKey == "private")
+                {
+                    rSA.RSADecifrado(RutaFile, RutaKey, nombre);
+                }
+                else
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError);
+                } 
             }
             else
             {
@@ -163,6 +173,19 @@ namespace Lab06_EDII.Controllers
                 {".txt","text/plain"},
                 {".rsa","text/plain"},
             };
+        }
+
+        private void ExistFiles() {
+            if (System.IO.File.Exists(Environment.CurrentDirectory + "\\Keys.zip"))
+            {
+                System.IO.File.Delete(Environment.CurrentDirectory + "\\Keys.zip");
+            }
+
+            if (Directory.Exists($"temp"))
+            {
+                Directory.Delete($"temp",true);
+            }
+            
         }
     }
 }
